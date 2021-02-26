@@ -38,6 +38,23 @@ namespace NaturalBandingCS {
 
             return sdcmAllList.Select(t => new Tuple<double, double>(t.Item1, (sdam - t.Item2) / sdam)).ToList();
         }
+
+        private static List<double> GetInitialBandIndexList(int numOfBands) {
+            var resultList = new List<double>();
+            for (var i = 0; i < numOfBands; i++) {
+                resultList.Add(i);
+            }
+            return resultList;
+        }
+
+        private static List<List<double>> GetDividedList(List<double> inputList, List<int> bandIndexList) {
+            bandIndexList.Sort();
+            var resultList = new List<List<double>>();
+            for (var i = 0; i < bandIndexList.Count - 1; i++) {
+                resultList.Add(inputList.GetRange(bandIndexList[i], bandIndexList[i + 1] - bandIndexList[i]));
+            }
+            return resultList;
+        }
         
         private static double GetSdcmAll(List<List<double>> inputListList) {
             var sdcmAll = (from iList in inputListList let mean = iList.Sum() / iList.Count select iList.Sum(value => Math.Pow(value - mean, 2))).Sum();
