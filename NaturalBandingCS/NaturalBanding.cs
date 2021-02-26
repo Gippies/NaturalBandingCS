@@ -5,11 +5,6 @@ using System.Linq;
 namespace NaturalBandingCS {
     public class NaturalBanding {
 
-        private static double GetSdcmAll(List<List<double>> inputListList) {
-            var sdcmAll = (from iList in inputListList let mean = iList.Sum() / iList.Count select iList.Sum(value => Math.Pow(value - mean, 2))).Sum();
-            return sdcmAll;
-        }
-        
         public static List<Tuple<double, double>> Jenks(List<double> inputList, int numOfBands) {
             inputList.Sort();
             var mean = inputList.Sum() / inputList.Count;
@@ -42,6 +37,11 @@ namespace NaturalBandingCS {
             }
 
             return sdcmAllList.Select(t => new Tuple<double, double>(t.Item1, (sdam - t.Item2) / sdam)).ToList();
+        }
+        
+        private static double GetSdcmAll(List<List<double>> inputListList) {
+            var sdcmAll = (from iList in inputListList let mean = iList.Sum() / iList.Count select iList.Sum(value => Math.Pow(value - mean, 2))).Sum();
+            return sdcmAll;
         }
 
         public static void Main() {
