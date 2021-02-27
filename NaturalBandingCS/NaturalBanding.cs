@@ -40,6 +40,9 @@ namespace NaturalBandingCS {
             }
             if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[currentIndex - 1]) {
                 bandIndexList[currentIndex - 2]++;
+                if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[bandIndexList.Count - 1] && currentIndex != bandIndexList.Count) {
+                    bandIndexList[currentIndex - 1] = bandIndexList[currentIndex - 2] + 1;
+                }
                 return true;
             }
             if (currentIndex - 2 > 0) {
@@ -65,8 +68,8 @@ namespace NaturalBandingCS {
 
         public static void Main() {
             var inputList = new List<double> {12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
-            var temp = Jenks(inputList, 5);
-            foreach (var myTuple in temp) {
+            var results = Jenks(inputList, 5);
+            foreach (var myTuple in results) {
                 var thingToPrint = "";
                 foreach (var myList in myTuple.Item1) {
                     thingToPrint += "[";

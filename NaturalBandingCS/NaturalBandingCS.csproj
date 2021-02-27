@@ -41,6 +41,13 @@
         <Compile Include="NaturalBanding.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <Content Include="data\ByCounty.csv" />
+      <Content Include="data\ByState.csv" />
+      <Content Include="data\testset.csv" />
+      <Content Include="data\TIV2020_ByCounty.csv" />
+      <Content Include="data\TIV2020_ByState.csv" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
