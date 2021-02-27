@@ -11,39 +11,20 @@ namespace NaturalBandingCS {
             var sdam = inputList.Sum(input => Math.Pow(input - mean, 2.0));
 
             var sdcmAllList = new List<Tuple<double, double>>();
-            for (var i = 1; i < inputList.Count; i++) {
-                var firstSum = 0.0;
-                for (var j = 0; j < i; j++) {
-                    firstSum += inputList[j];
-                }
-
-                var secondSum = 0.0;
-                for (var j = i; j < inputList.Count; j++) {
-                    secondSum += inputList[j];
-                }
-
-                var firstMean = firstSum / i;
-                var secondMean = secondSum / (inputList.Count - i);
-
-                var sdcmAll = 0.0;
-                for (var j = 0; j < i; j++) {
-                    sdcmAll += Math.Pow(inputList[j] - firstMean, 2);
-                }
-
-                for (var j = i; j < inputList.Count; j++) {
-                    sdcmAll += Math.Pow(inputList[j] - secondMean, 2);
-                }
-                sdcmAllList.Add(new Tuple<double, double>(inputList[i], sdcmAll));
-            }
+            var bandIndexList = GetInitialBandIndexList(inputList.Count, numOfBands);
+            var dividedList = GetDividedList(inputList, bandIndexList);
+            var sdcmAll = GetSdcmAll(dividedList);
+            sdcmAllList.Add(new Tuple<double, double>(1, sdcmAll));
 
             return sdcmAllList.Select(t => new Tuple<double, double>(t.Item1, (sdam - t.Item2) / sdam)).ToList();
         }
 
-        private static List<double> GetInitialBandIndexList(int numOfBands) {
-            var resultList = new List<double>();
+        private static List<int> GetInitialBandIndexList(int inputCount, int numOfBands) {
+            var resultList = new List<int>();
             for (var i = 0; i < numOfBands; i++) {
                 resultList.Add(i);
             }
+            resultList.Add(inputCount);
             return resultList;
         }
 
