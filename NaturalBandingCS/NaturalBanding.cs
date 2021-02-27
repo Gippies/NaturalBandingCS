@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace NaturalBandingCS {
     public class NaturalBanding {
@@ -18,7 +19,7 @@ namespace NaturalBandingCS {
                 var dividedList = GetDividedList(inputList, bandIndexList);
                 var sdcmAll = GetSdcmAll(dividedList);
                 sdcmAllList.Add(new Tuple<List<List<double>>, double>(dividedList, sdcmAll));
-                hasIncremented = IncrementBandIndexList(bandIndexList);
+                hasIncremented = IncrementBandIndexList(bandIndexList, bandIndexList.Count);
             }
             
             return sdcmAllList.Select(t => new Tuple<List<List<double>>, double>(t.Item1, (sdam - t.Item2) / sdam)).ToList();
@@ -33,10 +34,17 @@ namespace NaturalBandingCS {
             return resultList;
         }
 
-        private static bool IncrementBandIndexList(List<int> bandIndexList) {
-            if (bandIndexList[bandIndexList.Count - 2] + 1 < bandIndexList[bandIndexList.Count - 1]) {
-                bandIndexList[bandIndexList.Count - 2]++;
+        private static bool IncrementBandIndexList(List<int> bandIndexList, int currentIndex) {
+            if (currentIndex - 2 == 0) {
+                return false;
+            }
+            if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[currentIndex - 1]) {
+                bandIndexList[currentIndex - 2]++;
                 return true;
+            }
+            if (currentIndex - 2 > 0) {
+                currentIndex--;
+                return IncrementBandIndexList(bandIndexList, currentIndex);
             }
             return false;
         }
@@ -57,7 +65,17 @@ namespace NaturalBandingCS {
 
         public static void Main() {
             var inputList = new List<double> {12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
-            Jenks(inputList, 5).ForEach(Console.WriteLine);
+            var temp = Jenks(inputList, 5);
+            foreach (var myTuple in temp) {
+                var thingToPrint = "";
+                foreach (var myList in myTuple.Item1) {
+                    thingToPrint += "[";
+                    thingToPrint += string.Join(", ", myList);
+                    thingToPrint += "]";
+                }
+                thingToPrint += " " + myTuple.Item2.ToString(Thread.CurrentThread.CurrentCulture);
+                Console.WriteLine(thingToPrint);
+            }
         }
     }
 }
