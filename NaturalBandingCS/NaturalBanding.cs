@@ -15,10 +15,9 @@ namespace NaturalBandingCS {
             var hasIncremented = true;
             
             var largestGvf = 0.0;
-            var numOfIterations = 0;
             List<double> currentResult = null;
 
-            while (hasIncremented && largestGvf < targetGvf && numOfIterations < 100000) {
+            while (hasIncremented && largestGvf < targetGvf) {
                 var sdcmAll = GetSdcmAll(inputList, bandIndexList);
                 var gvf = (sdam - sdcmAll) / sdam;
                 if (gvf > largestGvf) {
@@ -26,7 +25,6 @@ namespace NaturalBandingCS {
                     currentResult = GetResultList(inputList, bandIndexList);
                 }
                 hasIncremented = IncrementBandIndexList(bandIndexList);
-                numOfIterations++;
             }
 
             return currentResult;
