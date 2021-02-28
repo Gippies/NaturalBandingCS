@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace NaturalBandingCS {
     public class NaturalBanding {
 
-        public static List<Tuple<List<List<double>>, double>> Jenks(List<double> inputList, int numOfBands) {
+        public static List<List<double>> Jenks(List<double> inputList, int numOfBands) {
             inputList.Sort();
             var mean = inputList.Sum() / inputList.Count;
             var sdam = inputList.Sum(input => Math.Pow(input - mean, 2.0));
@@ -22,7 +21,15 @@ namespace NaturalBandingCS {
                 hasIncremented = IncrementBandIndexList(bandIndexList, bandIndexList.Count);
             }
             
-            return sdcmAllList.Select(t => new Tuple<List<List<double>>, double>(t.Item1, (sdam - t.Item2) / sdam)).ToList();
+            var gvfList = sdcmAllList.Select(t => new Tuple<List<List<double>>, double>(t.Item1, (sdam - t.Item2) / sdam)).ToList();
+            var largestGvf = 0.0;
+            List<List<double>> currentResult = null;
+            foreach (var (item1, item2) in gvfList.Where(gvf => largestGvf < gvf.Item2)) {
+                currentResult = item1;
+                largestGvf = item2;
+            }
+
+            return currentResult;
         }
 
         private static List<int> GetInitialBandIndexList(int inputCount, int numOfBands) {
@@ -69,16 +76,13 @@ namespace NaturalBandingCS {
         public static void Main() {
             var inputList = new List<double> {12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
             var results = Jenks(inputList, 5);
-            foreach (var myTuple in results) {
-                var thingToPrint = "";
-                foreach (var myList in myTuple.Item1) {
-                    thingToPrint += "[";
-                    thingToPrint += string.Join(", ", myList);
-                    thingToPrint += "]";
-                }
-                thingToPrint += " " + myTuple.Item2.ToString(Thread.CurrentThread.CurrentCulture);
-                Console.WriteLine(thingToPrint);
+            var thingToPrint = "";
+            foreach (var myList in results) {
+                thingToPrint += "[";
+                thingToPrint += string.Join(", ", myList);
+                thingToPrint += "]";
             }
+            Console.WriteLine(thingToPrint);
         }
     }
 }
