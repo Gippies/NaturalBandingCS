@@ -20,7 +20,7 @@ namespace NaturalBandingCS {
             foreach (var myList in results) {
                 thingToPrint += "[";
                 thingToPrint += string.Join(", ", myList);
-                thingToPrint += "]";
+                thingToPrint += "] ";
             }
             Console.WriteLine(thingToPrint);
         }

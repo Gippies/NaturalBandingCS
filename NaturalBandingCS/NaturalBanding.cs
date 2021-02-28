@@ -25,7 +25,7 @@ namespace NaturalBandingCS {
                     largestGvf = gvf;
                     currentResult = dividedList;
                 }
-                hasIncremented = IncrementBandIndexList(bandIndexList, bandIndexList.Count);
+                hasIncremented = IncrementBandIndexList(bandIndexList);
             }
 
             return currentResult;
@@ -40,28 +40,19 @@ namespace NaturalBandingCS {
             return resultList;
         }
 
-        private static bool IncrementBandIndexList(List<int> bandIndexList, int currentIndex) {
-            while (true) {
-                if (currentIndex - 2 == 0) {
-                    return false;
-                }
-
+        private static bool IncrementBandIndexList(List<int> bandIndexList) {
+            var currentIndex = bandIndexList.Count;
+            while (currentIndex - 2 > 0) {
                 if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[currentIndex - 1]) {
                     bandIndexList[currentIndex - 2]++;
                     if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[bandIndexList.Count - 1] && currentIndex != bandIndexList.Count) {
                         bandIndexList[currentIndex - 1] = bandIndexList[currentIndex - 2] + 1;
                     }
-
                     return true;
                 }
-
-                if (currentIndex - 2 > 0) {
-                    currentIndex--;
-                    continue;
-                }
-
-                return false;
+                currentIndex--;
             }
+            return false;
         }
 
         private static List<List<double>> GetDividedList(List<double> inputList, List<int> bandIndexList) {
