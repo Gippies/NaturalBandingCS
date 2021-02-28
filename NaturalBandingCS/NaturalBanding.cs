@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace NaturalBandingCS {
-    public class NaturalBanding {
+    public static class NaturalBanding {
 
         public static List<List<double>> Jenks(List<double> inputList, int numOfBands, double targetGvf) {
             inputList.Sort();
+            inputList.Reverse();
             var mean = inputList.Sum() / inputList.Count;
             var sdam = inputList.Sum(input => Math.Pow(input - mean, 2.0));
 
@@ -76,27 +76,6 @@ namespace NaturalBandingCS {
         private static double GetSdcmAll(List<List<double>> inputListList) {
             var sdcmAll = (from iList in inputListList let mean = iList.Sum() / iList.Count select iList.Sum(value => Math.Pow(value - mean, 2))).Sum();
             return sdcmAll;
-        }
-
-        public static void Main() {
-            var inputList = new List<double>();
-            using (var fileStream = File.OpenRead("../../data/TIV2020_ByCounty.csv")) {
-                using (var streamReader = new StreamReader(fileStream)) {
-                    string line;
-                    while ((line = streamReader.ReadLine()) != null) {
-                        inputList.Add(Convert.ToDouble(line));
-                    }
-                }
-            }
-            
-            var results = Jenks(inputList, 5, 0.8);
-            var thingToPrint = "";
-            foreach (var myList in results) {
-                thingToPrint += "[";
-                thingToPrint += string.Join(", ", myList);
-                thingToPrint += "]";
-            }
-            Console.WriteLine(thingToPrint);
         }
     }
 }
