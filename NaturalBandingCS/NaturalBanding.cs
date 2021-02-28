@@ -6,28 +6,26 @@ using System.Linq;
 namespace NaturalBandingCS {
     public class NaturalBanding {
 
-        public static List<List<double>> Jenks(List<double> inputList, int numOfBands) {
+        public static List<List<double>> Jenks(List<double> inputList, int numOfBands, double targetGvf) {
             inputList.Sort();
             var mean = inputList.Sum() / inputList.Count;
             var sdam = inputList.Sum(input => Math.Pow(input - mean, 2.0));
 
-            var sdcmAllList = new List<Tuple<List<List<double>>, double>>();
             var bandIndexList = GetInitialBandIndexList(inputList.Count, numOfBands);
             var hasIncremented = true;
-
-            while (hasIncremented) {
-                var dividedList = GetDividedList(inputList, bandIndexList);
-                var sdcmAll = GetSdcmAll(dividedList);
-                sdcmAllList.Add(new Tuple<List<List<double>>, double>(dividedList, sdcmAll));
-                hasIncremented = IncrementBandIndexList(bandIndexList, bandIndexList.Count);
-            }
             
-            var gvfList = sdcmAllList.Select(t => new Tuple<List<List<double>>, double>(t.Item1, (sdam - t.Item2) / sdam)).ToList();
             var largestGvf = 0.0;
             List<List<double>> currentResult = null;
-            foreach (var (item1, item2) in gvfList.Where(gvf => largestGvf < gvf.Item2)) {
-                currentResult = item1;
-                largestGvf = item2;
+
+            while (hasIncremented && largestGvf < targetGvf) {
+                var dividedList = GetDividedList(inputList, bandIndexList);
+                var sdcmAll = GetSdcmAll(dividedList);
+                var gvf = (sdam - sdcmAll) / sdam;
+                if (gvf > largestGvf) {
+                    largestGvf = gvf;
+                    currentResult = dividedList;
+                }
+                hasIncremented = IncrementBandIndexList(bandIndexList, bandIndexList.Count);
             }
 
             return currentResult;
@@ -43,21 +41,27 @@ namespace NaturalBandingCS {
         }
 
         private static bool IncrementBandIndexList(List<int> bandIndexList, int currentIndex) {
-            if (currentIndex - 2 == 0) {
+            while (true) {
+                if (currentIndex - 2 == 0) {
+                    return false;
+                }
+
+                if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[currentIndex - 1]) {
+                    bandIndexList[currentIndex - 2]++;
+                    if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[bandIndexList.Count - 1] && currentIndex != bandIndexList.Count) {
+                        bandIndexList[currentIndex - 1] = bandIndexList[currentIndex - 2] + 1;
+                    }
+
+                    return true;
+                }
+
+                if (currentIndex - 2 > 0) {
+                    currentIndex--;
+                    continue;
+                }
+
                 return false;
             }
-            if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[currentIndex - 1]) {
-                bandIndexList[currentIndex - 2]++;
-                if (bandIndexList[currentIndex - 2] + 1 < bandIndexList[bandIndexList.Count - 1] && currentIndex != bandIndexList.Count) {
-                    bandIndexList[currentIndex - 1] = bandIndexList[currentIndex - 2] + 1;
-                }
-                return true;
-            }
-            if (currentIndex - 2 > 0) {
-                currentIndex--;
-                return IncrementBandIndexList(bandIndexList, currentIndex);
-            }
-            return false;
         }
 
         private static List<List<double>> GetDividedList(List<double> inputList, List<int> bandIndexList) {
@@ -85,7 +89,7 @@ namespace NaturalBandingCS {
                 }
             }
             
-            var results = Jenks(inputList, 5);
+            var results = Jenks(inputList, 5, 0.8);
             var thingToPrint = "";
             foreach (var myList in results) {
                 thingToPrint += "[";
