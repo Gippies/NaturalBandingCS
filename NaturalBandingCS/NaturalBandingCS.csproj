@@ -49,7 +49,6 @@
       <Content Include="data\testset.csv" />
       <Content Include="data\TIV2020_ByCounty.csv" />
       <Content Include="data\TIV2020_ByState.csv" />
-      <Content Include="_jenks.c" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
