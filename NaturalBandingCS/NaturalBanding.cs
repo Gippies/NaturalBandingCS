@@ -5,7 +5,7 @@ using System.Linq;
 namespace NaturalBandingCS {
     public static class NaturalBanding {
 
-        public static List<List<double>> Jenks(List<double> inputList, int numOfBands, double targetGvf) {
+        public static List<double> Jenks(List<double> inputList, int numOfBands, double targetGvf) {
             inputList.Sort();
             inputList.Reverse();
             var mean = inputList.Sum() / inputList.Count;
@@ -15,20 +15,30 @@ namespace NaturalBandingCS {
             var hasIncremented = true;
             
             var largestGvf = 0.0;
-            List<List<double>> currentResult = null;
+            var numOfIterations = 0;
+            List<double> currentResult = null;
 
-            while (hasIncremented && largestGvf < targetGvf) {
-                var dividedList = GetDividedList(inputList, bandIndexList);
-                var sdcmAll = GetSdcmAll(dividedList);
+            while (hasIncremented && largestGvf < targetGvf && numOfIterations < 100000) {
+                var sdcmAll = GetSdcmAll(inputList, bandIndexList);
                 var gvf = (sdam - sdcmAll) / sdam;
                 if (gvf > largestGvf) {
                     largestGvf = gvf;
-                    currentResult = dividedList;
+                    currentResult = GetResultList(inputList, bandIndexList);
                 }
                 hasIncremented = IncrementBandIndexList(bandIndexList);
+                numOfIterations++;
             }
 
             return currentResult;
+        }
+
+        private static List<double> GetResultList(List<double> inputList, List<int> bandIndexList) {
+            var resultList = new List<double>();
+            for (var i = 0; i < bandIndexList.Count - 1; i++) {
+                resultList.Add(inputList[bandIndexList[i]]);
+            }
+
+            return resultList;
         }
 
         private static List<int> GetInitialBandIndexList(int inputCount, int numOfBands) {
@@ -55,17 +65,20 @@ namespace NaturalBandingCS {
             return false;
         }
 
-        private static List<List<double>> GetDividedList(List<double> inputList, List<int> bandIndexList) {
-            bandIndexList.Sort();
-            var resultList = new List<List<double>>();
+        private static double GetSdcmAll(List<double> inputList, List<int> bandIndexList) {
+            var sdcmAll = 0.0;
             for (var i = 0; i < bandIndexList.Count - 1; i++) {
-                resultList.Add(inputList.GetRange(bandIndexList[i], bandIndexList[i + 1] - bandIndexList[i]));
+                var meanSum = 0.0;
+                var meanCount = 0;
+                for (var j = bandIndexList[i]; j < bandIndexList[i + 1]; j++) {
+                    meanSum += inputList[j];
+                    meanCount++;
+                }
+                var mean = meanSum / meanCount;
+                for (var j = bandIndexList[i]; j < bandIndexList[i + 1]; j++) {
+                    sdcmAll += Math.Pow(inputList[j] - mean, 2.0);
+                }
             }
-            return resultList;
-        }
-        
-        private static double GetSdcmAll(List<List<double>> inputListList) {
-            var sdcmAll = (from iList in inputListList let mean = iList.Sum() / iList.Count select iList.Sum(value => Math.Pow(value - mean, 2))).Sum();
             return sdcmAll;
         }
     }

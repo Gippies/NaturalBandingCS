@@ -15,17 +15,12 @@ namespace NaturalBandingCS {
                 }
             }
             
-            var results = NaturalBanding.Jenks(inputList, 7, 0.96);
+            var results = NaturalBanding.Jenks(inputList, 5, 0.8);
             PrintResultList(results);
         }
         
-        private static void PrintResultList(List<List<double>> resultList) {
-            var thingToPrint = "";
-            foreach (var myList in resultList) {
-                thingToPrint += "[";
-                thingToPrint += string.Join(", ", myList);
-                thingToPrint += "]\n";
-            }
+        private static void PrintResultList(List<double> resultList) {
+            var thingToPrint = "[" + string.Join(", ", resultList) + "]";
             Console.WriteLine(thingToPrint);
         }
     }
