@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace NaturalBandingCS {
@@ -74,7 +75,16 @@ namespace NaturalBandingCS {
         }
 
         public static void Main() {
-            var inputList = new List<double> {12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
+            var inputList = new List<double>();
+            using (var fileStream = File.OpenRead("../../data/TIV2020_ByCounty.csv")) {
+                using (var streamReader = new StreamReader(fileStream)) {
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null) {
+                        inputList.Add(Convert.ToDouble(line));
+                    }
+                }
+            }
+            
             var results = Jenks(inputList, 5);
             var thingToPrint = "";
             foreach (var myList in results) {
