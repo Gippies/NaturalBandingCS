@@ -15,7 +15,8 @@ namespace NaturalBandingCS {
                 }
             }
             
-            var results = NaturalBanding.Jenks(inputList, 5, 0.8);
+            // var results = NaturalBanding.Jenks(inputList, 5, 0.8);
+            var results = NaturalBanding2.JenksBreakValues(inputList, 6);
             PrintResultList(results);
         }
         
