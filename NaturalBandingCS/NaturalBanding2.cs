@@ -28,7 +28,7 @@ namespace NaturalBandingCS {
                 mat2.Add(row);
             }
 
-            double v = 0;
+            var v = 0.0;
             for (var l = 2; l <= arrayLength; l++) {
                 var s1 = 0.0;
                 var s2 = 0.0;
