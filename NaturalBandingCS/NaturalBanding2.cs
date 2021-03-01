@@ -2,35 +2,34 @@
 using System.Collections.Generic;
 
 namespace NaturalBandingCS {
-    public class NaturalBanding2 {
+    public static class NaturalBanding2 {
         public static List<double> JenksBreakValues(List<double> values, int nbClass) {
-            int i, j, l, k = nbClass;
-            var mat1 = new List<List<double>>();
-            var mat2 = new List<List<double>>();
-            List<double> row;
+            var k = nbClass;
             var breaks = new List<double>();
-            var lengthArray = values.Count;
+            var arrayLength = values.Count;
 
             values.Sort();
 
-            for (i = 0; i < lengthArray; i++) {
-                row = new List<double>();
-                for (j = 0; j < k; j++) {
+            var mat1 = new List<List<double>>();
+            for (var i = 0; i < arrayLength; i++) {
+                var row = new List<double>();
+                for (var j = 0; j < k; j++) {
                     row.Add(1.0);
                 }
                 mat1.Add(row);
             }
 
-            for (i = 0; i < lengthArray; i++) {
-                row = new List<double>();
-                for (j = 0; j < k; j++) {
-                    row.Add(Double.MaxValue);
+            var mat2 = new List<List<double>>();
+            for (var i = 0; i < arrayLength; i++) {
+                var row = new List<double>();
+                for (var j = 0; j < k; j++) {
+                    row.Add(double.MaxValue);
                 }
                 mat2.Add(row);
             }
 
             double v = 0;
-            for (l = 2; l <= lengthArray; l++) {
+            for (var l = 2; l <= arrayLength; l++) {
                 var s1 = 0.0;
                 var s2 = 0.0;
                 var w = 0.0;
@@ -44,7 +43,7 @@ namespace NaturalBandingCS {
                     var i4 = i3 - 1;
 
                     if (i4 != 0) {
-                        for (j = 2; j <= k; j++) {
+                        for (var j = 2; j <= k; j++) {
                             if (mat2[l - 1][j - 1] >= v + mat2[i4 - 1][j - 2]) {
                                 mat1[l - 1][j - 1] = i3;
                                 mat2[l - 1][j - 1] = v + mat2[i4 - 1][j - 2];
@@ -58,16 +57,16 @@ namespace NaturalBandingCS {
             }
 
             var kclass = new double[k];
-            k = lengthArray;
-            for (j = nbClass; j > 1; j--) {
+            k = arrayLength;
+            for (var j = nbClass; j > 1; j--) {
                 kclass[j - 2] = k = (int) mat1[k - 1][j - 1] - 1;
             }
 
             breaks.Add(values[0]);
-            for (i = 1; i < nbClass; i++) {
+            for (var i = 1; i < nbClass; i++) {
                 breaks.Add(values[(int) kclass[i - 1] - 1]);
             }
-            breaks.Add(values[lengthArray - 1]);
+            breaks.Add(values[arrayLength - 1]);
             return breaks;
         }
     }
