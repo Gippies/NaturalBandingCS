@@ -1,0 +1,3 @@
+﻿# Natural Banding in C\#
+
+This is my attempt at implementing the Fisher-Jenks algorithm in C#. The "NaturalBanding.cs" file includes my implementation attempt and the "NaturalBanding2.cs" file includes a transcribed version from a python library by user, "mthh" found [here](https://github.com/mthh/jenkspy). It is available for use under the [MIT License](https://github.com/mthh/jenkspy/blob/master/LICENSE).
