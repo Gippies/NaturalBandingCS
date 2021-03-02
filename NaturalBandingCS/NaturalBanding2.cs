@@ -6,18 +6,18 @@ namespace NaturalBandingCS {
         public static List<double> JenksBreakValues(List<double> values, int nbClass) {
             values.Sort();
 
-            var mat1 = new List<List<double>>();
+            var mat1 = new List<List<double>>(values.Count);
             for (var i = 0; i < values.Count; i++) {
-                var row = new List<double>();
+                var row = new List<double>(nbClass);
                 for (var j = 0; j < nbClass; j++) {
                     row.Add(1.0);
                 }
                 mat1.Add(row);
             }
 
-            var mat2 = new List<List<double>>();
+            var mat2 = new List<List<double>>(values.Count);
             for (var i = 0; i < values.Count; i++) {
-                var row = new List<double>();
+                var row = new List<double>(nbClass);
                 for (var j = 0; j < nbClass; j++) {
                     row.Add(double.MaxValue);
                 }
